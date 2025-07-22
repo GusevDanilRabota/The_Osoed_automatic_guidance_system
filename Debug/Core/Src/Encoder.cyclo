@@ -1,0 +1,2 @@
+../Core/Src/Encoder.c:68:6:Encoder_Init	3
+../Core/Src/Encoder.c:91:6:Encoder_GetAngular	2

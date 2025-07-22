@@ -1,0 +1,6 @@
+../Core/Src/Stepper_Motor_Driver.c:48:6:Pin_SetLevl	2
+../Core/Src/Stepper_Motor_Driver.c:58:6:Motor_DirRot	2
+../Core/Src/Stepper_Motor_Driver.c:68:6:Motor_SetFrequency	2
+../Core/Src/Stepper_Motor_Driver.c:88:6:Motor_UpFrequency	2
+../Core/Src/Stepper_Motor_Driver.c:100:6:Motor_Start	1
+../Core/Src/Stepper_Motor_Driver.c:133:6:Motor_Stop	1

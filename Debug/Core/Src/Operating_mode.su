@@ -1,0 +1,4 @@
+../Core/Src/Operating_mode.c:21:6:Mode_Manual	16	static
+../Core/Src/Operating_mode.c:35:6:Mode_Semi_automatic	16	static
+../Core/Src/Operating_mode.c:49:6:Mode_Moving_away_from_borders	24	static
+../Core/Src/Operating_mode.c:58:6:Mode_Automatic	40	static
