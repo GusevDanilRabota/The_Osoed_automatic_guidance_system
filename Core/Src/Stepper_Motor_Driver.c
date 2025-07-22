@@ -15,7 +15,7 @@ Motor Motor_AZ = {
 	  .DIR = {.Port = GPIOE, .Pin = GPIO_PIN_8}
     },
 	.Frequency = {
-      .Maximum_pulse = 200000,
+    .Maximum_pulse = 200000,
 	  .Minimum_pulse = 30000,
 	  .Step_up_the_pulse = 10000
 	}
@@ -29,7 +29,7 @@ Motor Motor_AZ = {
 Motor Motor_EL = {
   .Setting = {
     .Pin = {
-      .ENA = {.Port = GPIOE, .Pin = GPIO_PIN_12},
+    .ENA = {.Port = GPIOE, .Pin = GPIO_PIN_12},
 	  .PUL = {.Port = GPIOA, .Pin = GPIO_PIN_5},
 	  .DIR = {.Port = GPIOE, .Pin = GPIO_PIN_9}
     },
