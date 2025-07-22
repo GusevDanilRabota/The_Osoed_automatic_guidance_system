@@ -9,21 +9,17 @@
 #define INC_SYSTEM_STATUS_H_
 
 #include "Macros.h"
-#include "stm32f4xx_hal.h"
+#include "Typedef_pins.h"
 
 typedef struct {
+  float Actual_angular;
   float Maximum;
   float Minimum;
-} Angulars;
-
-typedef struct {
-  Angulars Config_angular;
-  float Actual_angular;
 } Systems;
 
 extern Systems Systema_AZ;
 extern Systems Systema_EL;
 
-char System_CheckLimit(Systems *Systema_xx, float Incremtnt_limit);
+int System_CheckLimit(Systems *Systema_xx);
 
 #endif /* INC_SYSTEM_STATUS_H_ */

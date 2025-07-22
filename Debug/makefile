@@ -60,8 +60,8 @@ all: main-build
 main-build: The_Osoed_automatic_guidance_system.elf secondary-outputs
 
 # Tool invocations
-The_Osoed_automatic_guidance_system.elf The_Osoed_automatic_guidance_system.map: $(OBJS) $(USER_OBJS) C:\Users\u033007\Documents\STMicrocontroller\STM32F407VGT6\The_Osoed_automatic_guidance_system\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "The_Osoed_automatic_guidance_system.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\u033007\Documents\STMicrocontroller\STM32F407VGT6\The_Osoed_automatic_guidance_system\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="The_Osoed_automatic_guidance_system.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+The_Osoed_automatic_guidance_system.elf The_Osoed_automatic_guidance_system.map: $(OBJS) $(USER_OBJS) C:\Users\u033007\Documents\STMicrocontroller\STM32F407VGT6\GusevDanil\The_Osoed_automatic_guidance_system\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "The_Osoed_automatic_guidance_system.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\u033007\Documents\STMicrocontroller\STM32F407VGT6\GusevDanil\The_Osoed_automatic_guidance_system\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="The_Osoed_automatic_guidance_system.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

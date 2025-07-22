@@ -1,6 +1,6 @@
-../Core/Src/Stepper_Motor_Driver.c:48:6:Pin_SetLevl	16	static
-../Core/Src/Stepper_Motor_Driver.c:58:6:Motor_DirRot	16	static
-../Core/Src/Stepper_Motor_Driver.c:68:6:Motor_SetFrequency	24	static
+../Core/Src/Stepper_Motor_Driver.c:43:6:Pin_SetLevl	16	static
+../Core/Src/Stepper_Motor_Driver.c:56:6:Motor_DirRot	16	static
+../Core/Src/Stepper_Motor_Driver.c:69:6:Motor_SetFrequency	24	static
 ../Core/Src/Stepper_Motor_Driver.c:88:6:Motor_UpFrequency	16	static
 ../Core/Src/Stepper_Motor_Driver.c:100:6:Motor_Start	24	static
 ../Core/Src/Stepper_Motor_Driver.c:133:6:Motor_Stop	24	static

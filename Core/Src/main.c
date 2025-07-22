@@ -85,15 +85,15 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  Motor_AZ.Setting.Timer.Number = &htim3;
-  Motor_AZ.Setting.Timer.Channel = TIM_CHANNEL_1;
-  Motor_EL.Setting.Timer.Number = &htim2;
-  Motor_EL.Setting.Timer.Channel = TIM_CHANNEL_1;
+  Motor_AZ.Parameters.Timer.Number_timer = &htim3;
+  Motor_AZ.Parameters.Timer.Channel = TIM_CHANNEL_1;
+  Motor_EL.Parameters.Timer.Number_timer = &htim2;
+  Motor_EL.Parameters.Timer.Channel = TIM_CHANNEL_1;
 
-  Encoder_AZ.Timer = &htim8;
-  Encoder_EL.Timer = &htim4;
+  Encoder_AZ.Timer_number = &htim8;
+  Encoder_EL.Timer_number = &htim4;
 
-  RP_message.Chanal = &huart2;
+  RP_message.UART_port = &huart2;
   Size_Rx_UART = sizeof(RP_message.Rx_data);
   Size_Tx_UART = sizeof(RP_message.Tx_data);
   /* USER CODE END 1 */
@@ -126,10 +126,10 @@ int main(void)
   Encoder_Init(&Encoder_AZ);
   Encoder_Init(&Encoder_EL);
 
-  Motor_AZ.State.Old_value_tik = htim5.Instance->CNT;
-  Motor_EL.State.Old_value_tik = htim5.Instance->CNT;
+  Motor_AZ.Status.Tik[0] = htim5.Instance->CNT;
+  Motor_EL.Status.Tik[0] = htim5.Instance->CNT;
 
-//  HAL_UART_Receive_IT(RP_message.Chanal, (uint8_t*)RP_message.Rx_data, Size_Rx_UART);
+//  HAL_UART_Receive_IT(RP_message.UART_port, (uint8_t*)RP_message.Rx_data, Size_Rx_UART);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,7 +139,7 @@ int main(void)
 	Encoder_GetAngular(&Encoder_AZ);
     Encoder_GetAngular(&Encoder_EL);
 
-	if (System_CheckLimit(&Systema_AZ, 10.0f) && System_CheckLimit(&Systema_EL, 5.0f)) {
+	if (System_CheckLimit(&Systema_AZ) && System_CheckLimit(&Systema_EL)) {
 	  switch (RP_message.Rx_data[15]) {
 	    case '0':
 	      Mode_Manual(&Motor_AZ);
@@ -158,14 +158,14 @@ int main(void)
 	  Motor_Stop(&Motor_AZ);
 	  Motor_Stop(&Motor_EL);
 
-	  Mode_Moving_away_from_borders(&Motor_AZ, 11.0f);
-	  Mode_Moving_away_from_borders(&Motor_EL, 20.0f);
+	  Mode_Moving_away_from_borders(&Motor_AZ);
+	  Mode_Moving_away_from_borders(&Motor_EL);
 	};
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	Frequency_AZ = Motor_AZ.State.Frequency;
-	Frequency_EL = Motor_EL.State.Frequency;
+	Frequency_AZ = Motor_AZ.Status.Frequency;
+	Frequency_EL = Motor_EL.Status.Frequency;
 	Angular_AZ = Systema_AZ.Actual_angular;
 	Angular_EL = Systema_EL.Actual_angular;
 	Error_AZ = abs(RP_message.Azimuth - Systema_AZ.Actual_angular);
@@ -184,7 +184,7 @@ int main(void)
 	RP_message.Rx_data[17] = '0';
 
 	RP_message.Rx_data[18] = '\r'; RP_message.Rx_data[19] = '\n'; RP_message.Rx_data[20] = '\0';
-	Raspberry_DatPpars();
+	Raspberry_DatPpars(RP_message.Rx_data);
   }
   /* USER CODE END 3 */
 }
@@ -376,7 +376,7 @@ static void MX_TIM4_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM4_Init 2 */
-  htim4.Init.Period = Encoder_EL.Puls.Pulses_per_revolution * 4;
+  htim4.Init.Period = Encoder_EL.Pulses_per_revolution * 4 + Encoder_EL.Safe_start_value * 2;
   if (HAL_TIM_Encoder_Init(&htim4, &sConfig) != HAL_OK) {Error_Handler();}
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
   /* USER CODE END TIM4_Init 2 */
@@ -477,7 +477,7 @@ static void MX_TIM8_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM8_Init 2 */
-  htim8.Init.Period = Encoder_AZ.Puls.Pulses_per_revolution * 4;
+  htim8.Init.Period = Encoder_AZ.Pulses_per_revolution * 4 + Encoder_AZ.Safe_start_value * 2;
   if (HAL_TIM_Encoder_Init(&htim8, &sConfig) != HAL_OK) {Error_Handler();}
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
   /* USER CODE END TIM8_Init 2 */
@@ -565,8 +565,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	Raspberry_DatPpars();
-	HAL_UART_Receive_IT(RP_message.Chanal, (uint8_t*)RP_message.Rx_data, Size_Rx_UART);
+	Raspberry_DatPpars(RP_message.Rx_data);
+	HAL_UART_Receive_IT(RP_message.UART_port, (uint8_t*)RP_message.Rx_data, Size_Rx_UART);
 };
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {RP_message.transmitting = 0;}

@@ -8,86 +8,51 @@
 #ifndef INC_STEPPER_MOTOR_DRIVER_H_
 #define INC_STEPPER_MOTOR_DRIVER_H_
 
-#include "stm32f4xx_hal.h"
-
-//typedef enum
-//{
-//	Left = 0,
-//	Right
-//} Direction_rotation_AZ;
-//
-//typedef enum
-//{
-//	Up = 0,
-//	Down
-//} Direction_rotation_EL;
-//
-//typedef enum
-//{
-//	Work = 0,
-//	Sleep
-//} Operating_mode;
-//
-//typedef enum
-//{
-//	NotFunctioning = 0,
-//	Functioning
-//} Functioning_mode;
-
-typedef enum
-{
-	Low = 0,
-	Hight
-} Levl_signal;
-
-typedef struct {
-  GPIO_TypeDef* Port;
-  unsigned short Pin;
-} Bundle_Port_Pin;
+#include "Macros.h"
+#include "Typedef_pins.h"
 
 typedef struct {
   Bundle_Port_Pin ENA;
-  Bundle_Port_Pin PUL;
   Bundle_Port_Pin DIR;
 } Pins;
 
 typedef struct {
-  unsigned int Maximum_pulse;
-  unsigned int Minimum_pulse;
-  unsigned int Step_up_the_pulse;
-} Frequency_settings;
+  TIM_HandleTypeDef *Number_timer;
+  unsigned int       Channel;
+} Timer;
 
 typedef struct {
-  TIM_HandleTypeDef *Number;
-  unsigned int Channel;
-} Timers;
+  unsigned int Maximum;
+  unsigned int Minimum;
+  unsigned int StepUp;
+} Frequency_parameters;
 
 typedef struct {
-  Pins Pin;
-  Frequency_settings Frequency;
-  Timers Timer;
-} Settings;
+  Pins                 Pins;
+  Timer                Timer;
+  Frequency_parameters Frequency;
+} System_parameters;
 
 typedef struct {
-  unsigned int Frequency;
+  unsigned int  Frequency;
   unsigned char Functioning;
-  unsigned int Old_value_tik;
-  unsigned int New_value_tik;
-} States;
+  unsigned char Direction_of_rotation;
+  unsigned int  Tik[2];
+} System_status;
 
 typedef struct {
-  Settings Setting;
-  States State;
+  System_parameters Parameters;
+  System_status     Status;
 } Motor;
 
 extern Motor Motor_AZ;
 extern Motor Motor_EL;
 
-void Pin_SetLevl(Bundle_Port_Pin *Pin, int State);
+void Pin_SetLevl(Bundle_Port_Pin *Pin, Levl_signal State);
 
 void Motor_SetFrequency(Motor *Motor_xx, unsigned int frequency);
 void Motor_UpFrequency(Motor *Motor_xx);
-void Motor_DirRot(Motor *Motor_xx, GPIO_PinState direction_of_rotation);
+void Motor_DirRot(Motor *Motor_xx, Levl_signal direction_of_rotation);
 void Motor_Start(Motor *Motor_xx);
 void Motor_Stop(Motor *Motor_xx);
 

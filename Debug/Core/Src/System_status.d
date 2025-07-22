@@ -1,5 +1,6 @@
 Core/Src/System_status.o: ../Core/Src/System_status.c \
  ../Core/Inc/System_status.h ../Core/Inc/Macros.h \
+ ../Core/Inc/Typedef_pins.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,6 +31,7 @@ Core/Src/System_status.o: ../Core/Src/System_status.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 ../Core/Inc/System_status.h:
 ../Core/Inc/Macros.h:
+../Core/Inc/Typedef_pins.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:

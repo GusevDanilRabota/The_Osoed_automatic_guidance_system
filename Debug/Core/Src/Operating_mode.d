@@ -1,6 +1,7 @@
 Core/Src/Operating_mode.o: ../Core/Src/Operating_mode.c \
  ../Core/Inc/Operating_mode.h ../Core/Inc/Raspberry.h \
  ../Core/Inc/System_status.h ../Core/Inc/Macros.h \
+ ../Core/Inc/Typedef_pins.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -34,6 +35,7 @@ Core/Src/Operating_mode.o: ../Core/Src/Operating_mode.c \
 ../Core/Inc/Raspberry.h:
 ../Core/Inc/System_status.h:
 ../Core/Inc/Macros.h:
+../Core/Inc/Typedef_pins.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:

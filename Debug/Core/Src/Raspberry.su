@@ -1,2 +1,2 @@
-../Core/Src/Raspberry.c:19:6:Raspberry_DatPpars	4	static
-../Core/Src/Raspberry.c:53:6:Raspberry_CreatMes	16	static
+../Core/Src/Raspberry.c:12:6:Raspberry_DatPpars	16	static
+../Core/Src/Raspberry.c:28:6:Raspberry_CreatMes	16	static

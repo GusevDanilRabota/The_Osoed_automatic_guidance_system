@@ -1,2 +1,2 @@
-../Core/Src/Encoder.c:68:6:Encoder_Init	32	static
-../Core/Src/Encoder.c:91:6:Encoder_GetAngular	24	static
+../Core/Src/Encoder.c:20:6:Encoder_Init	40	static
+../Core/Src/Encoder.c:44:6:Encoder_GetAngular	24	static

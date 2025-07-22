@@ -8,68 +8,68 @@
 #include "Stepper_Motor_Driver.h"
 
 Motor Motor_AZ = {
-  .Setting = {
-    .Pin = {
+  .Parameters = {
+    .Pins = {
       .ENA = {.Port = GPIOE, .Pin = GPIO_PIN_11},
-	  .PUL = {.Port = GPIOA, .Pin = GPIO_PIN_6},
 	  .DIR = {.Port = GPIOE, .Pin = GPIO_PIN_8}
     },
 	.Frequency = {
-    .Maximum_pulse = 200000,
-	  .Minimum_pulse = 30000,
-	  .Step_up_the_pulse = 10000
+      .Maximum = 200000,
+	  .Minimum = 30000,
+	  .StepUp = 10000
 	}
   },
-  .State = {
+  .Status = {
     .Frequency = 0,
 	.Functioning = 0
   }
 };
 
 Motor Motor_EL = {
-  .Setting = {
-    .Pin = {
-    .ENA = {.Port = GPIOE, .Pin = GPIO_PIN_12},
-	  .PUL = {.Port = GPIOA, .Pin = GPIO_PIN_5},
+  .Parameters = {
+    .Pins = {
+      .ENA = {.Port = GPIOE, .Pin = GPIO_PIN_12},
 	  .DIR = {.Port = GPIOE, .Pin = GPIO_PIN_9}
     },
 	.Frequency = {
-      .Maximum_pulse = 200000,
-	  .Minimum_pulse = 30000,
-	  .Step_up_the_pulse = 5000
+      .Maximum = 200000,
+	  .Minimum = 30000,
+	  .StepUp = 5000
 	}
   },
-  .State = {
-    .Frequency = 0,
-	.Functioning = 0
-  }
+  .Status = {0}
 };
 
-void Pin_SetLevl(Bundle_Port_Pin *Pin, int State) {
-//  HAL_GPIO_WritePin(Pin->Port, Pin->Pin, State);
-
+void Pin_SetLevl(Bundle_Port_Pin *Pin, Levl_signal State) {
+  /*
+   * Проверки на ноль
+   * Если в assert_param() передаётся False, то возвращается 0
+   * Иначе возрращается параметр
+   * */
   assert_param(IS_GPIO_PIN(Pin->Pin));
   assert_param(IS_GPIO_PIN_ACTION(State));
 
-  if(State != GPIO_PIN_RESET) {Pin->Port->BSRR = Pin->Pin;}
+  if(State != Low) {Pin->Port->BSRR = Pin->Pin;}
   else {Pin->Port->BSRR = (uint32_t)Pin->Pin << 16U;};
 };
 
-void Motor_DirRot(Motor *Motor_xx, GPIO_PinState Direction_of_rotation) {
-//  HAL_GPIO_WritePin(Motor_xx->Setting.Pin.DIR.Port, Motor_xx->Setting.Pin.DIR.Pin, Direction_of_rotation);
-
+void Motor_DirRot(Motor *Motor_xx, Levl_signal Direction_of_rotation) {
+  /*
+   * Проверки на ноль
+   * Если в assert_param() передаётся False, то возвращается 0
+   * Иначе возрращается параметр
+   * */
   assert_param(IS_GPIO_PIN(Motor_xx->Setting.Pin.DIR.Pin));
   assert_param(IS_GPIO_PIN_ACTION(Direction_of_rotation));
 
-  if(Direction_of_rotation != GPIO_PIN_RESET) {Motor_xx->Setting.Pin.DIR.Port->BSRR = Motor_xx->Setting.Pin.DIR.Pin;}
-  else {Motor_xx->Setting.Pin.DIR.Port->BSRR = (uint32_t)Motor_xx->Setting.Pin.DIR.Pin << 16U;};
+  if(Direction_of_rotation != Low) {Motor_xx->Parameters.Pins.DIR.Port->BSRR = Motor_xx->Parameters.Pins.DIR.Pin;}
+  else {Motor_xx->Parameters.Pins.DIR.Port->BSRR = (uint32_t)Motor_xx->Parameters.Pins.DIR.Pin << 16U;};
 };
 
 void Motor_SetFrequency(Motor *Motor_xx, unsigned int frequency) {
-  TIM_HandleTypeDef *Number_xx = Motor_xx->Setting.Timer.Number;
+  TIM_HandleTypeDef *Number_xx = Motor_xx->Parameters.Timer.Number_timer;
 
   static unsigned int prescaler = 0;
-//  unsigned int period = (HAL_RCC_GetPCLK1Freq() * 2 / (frequency * (prescaler + 1))) - 1;
   unsigned int period = ((SystemCoreClock >> APBPrescTable[(RCC->CFGR & RCC_CFGR_PPRE1) >> RCC_CFGR_PPRE1_Pos]) * 2 / (frequency * (prescaler + 1))) - 1;
 
   while (period > 0xFFFF) {
@@ -77,31 +77,31 @@ void Motor_SetFrequency(Motor *Motor_xx, unsigned int frequency) {
     period = ((SystemCoreClock >> APBPrescTable[(RCC->CFGR & RCC_CFGR_PPRE1) >> RCC_CFGR_PPRE1_Pos]) * 2 / (frequency * (prescaler + 1))) - 1;
   };
 
-  HAL_TIM_PWM_Stop(Number_xx, Motor_xx->Setting.Timer.Channel);
+  HAL_TIM_PWM_Stop(Number_xx, Motor_xx->Parameters.Timer.Channel);
   Number_xx->Instance->PSC = prescaler;
   Number_xx->Instance->ARR = period;
   Number_xx->Instance->CCR1 = Number_xx->Instance->ARR / 2;
 
-  Motor_xx->State.Frequency = frequency;
+  Motor_xx->Status.Frequency = frequency;
 };
 
 void Motor_UpFrequency(Motor *Motor_xx) {
-  if (Motor_xx->State.Frequency < Motor_xx->Setting.Frequency.Maximum_pulse) {
+  if (Motor_xx->Status.Frequency < Motor_xx->Parameters.Frequency.Maximum) {
     Motor_SetFrequency(
 	  Motor_xx,
-	  Motor_xx->State.Frequency + Motor_xx->Setting.Frequency.Step_up_the_pulse < Motor_xx->Setting.Frequency.Maximum_pulse ?
-	    Motor_xx->State.Frequency + Motor_xx->Setting.Frequency.Step_up_the_pulse :
-	    Motor_xx->Setting.Frequency.Maximum_pulse
+	  Motor_xx->Status.Frequency + Motor_xx->Parameters.Frequency.StepUp < Motor_xx->Parameters.Frequency.Maximum ?
+	    Motor_xx->Status.Frequency + Motor_xx->Parameters.Frequency.StepUp :
+	    Motor_xx->Parameters.Frequency.Maximum
 	);
-    HAL_TIM_PWM_Start(Motor_xx->Setting.Timer.Number, Motor_xx->Setting.Timer.Channel);
+    HAL_TIM_PWM_Start(Motor_xx->Parameters.Timer.Number_timer, Motor_xx->Parameters.Timer.Channel);
   };
 };
 
 void Motor_Start(Motor *Motor_xx) {
-  Settings *Setting_xx = &Motor_xx->Setting;
+  System_parameters *Setting_xx = &Motor_xx->Parameters;
 
-  Motor_SetFrequency(Motor_xx, Setting_xx->Frequency.Minimum_pulse);
-  HAL_TIM_PWM_Start(Setting_xx->Timer.Number, Setting_xx->Timer.Channel);
+  Motor_SetFrequency(Motor_xx, Setting_xx->Frequency.Minimum);
+  HAL_TIM_PWM_Start(Setting_xx->Timer.Number_timer, Setting_xx->Timer.Channel);
 
 //  TIM_HandleTypeDef *Number_xx = Motor_xx->Setting.Timer.Number;
 //  unsigned int Channel = Motor_xx->Setting.Timer.Channel;
@@ -117,8 +117,8 @@ void Motor_Start(Motor *Motor_xx) {
 //  }
 //  else __HAL_TIM_ENABLE(Number_xx);
 
-  Pin_SetLevl(&Setting_xx->Pin.ENA, Low);
-  Motor_xx->State.Functioning = Hight;
+  Pin_SetLevl(&Setting_xx->Pins.ENA, Low);
+  Motor_xx->Status.Functioning = Hight;
 };
 
 //HAL_StatusTypeDef HAL_TIM_PWM_Stop(TIM_HandleTypeDef *htim, uint32_t Channel)
@@ -131,18 +131,17 @@ void Motor_Start(Motor *Motor_xx) {
 //}
 
 void Motor_Stop(Motor *Motor_xx) {
-  Settings *Setting_xx = &Motor_xx->Setting;
+  System_parameters *Setting_xx = &Motor_xx->Parameters;
 
-  Pin_SetLevl(&Setting_xx->Pin.ENA, Hight);
-  Motor_SetFrequency(Motor_xx, Setting_xx->Frequency.Minimum_pulse);
-  HAL_TIM_PWM_Stop(Setting_xx->Timer.Number, Setting_xx->Timer.Channel);
+  Pin_SetLevl(&Setting_xx->Pins.ENA, Hight);
+  Motor_SetFrequency(Motor_xx, Setting_xx->Frequency.Minimum);
+  HAL_TIM_PWM_Stop(Setting_xx->Timer.Number_timer, Setting_xx->Timer.Channel);
 
 //  assert_param(IS_TIM_CCX_INSTANCE(Setting_xx->Timer.Number->Instance, Setting_xx->Timer.Channel)); /* Check the parameters */
 //  TIM_CCxChannelCmd(Setting_xx->Timer.Number->Instance, Setting_xx->Timer.Channel, TIM_CCx_DISABLE); /* Disable the Capture compare channel */
-//  if (IS_TIM_BREAK_INSTANCE(Setting_xx->Timer.Number) != RESET)
-//	  __HAL_TIM_MOE_DISABLE(Setting_xx->Timer.Number); /* Disable the Main Output */
+//  if (IS_TIM_BREAK_INSTANCE(Setting_xx->Timer.Number) != RESET) __HAL_TIM_MOE_DISABLE(Setting_xx->Timer.Number); /* Disable the Main Output */
 //  __HAL_TIM_DISABLE(Setting_xx->Timer.Number); /* Disable the Peripheral */
 //  TIM_CHANNEL_STATE_SET(Setting_xx->Timer.Number, Setting_xx->Timer.Channel, HAL_TIM_CHANNEL_STATE_READY); /* Set the TIM channel state */
 
-  Motor_xx->State.Functioning = Low;
+  Motor_xx->Status.Functioning = Low;
 };

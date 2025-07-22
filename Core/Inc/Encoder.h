@@ -13,21 +13,9 @@
 #include "Stepper_Motor_Driver.h"
 
 typedef struct {
-  GPIO_TypeDef* Port;
-  unsigned short Pin;
-} Bundle_pirt_Pin;
-
-typedef struct {
+  TIM_HandleTypeDef *Timer_number;
   unsigned short Pulses_per_revolution;
-  unsigned short Maximum;
-  unsigned short Minimum;
-} Pulses;
-
-typedef struct {
-  Bundle_pirt_Pin Port_A;
-  Bundle_pirt_Pin Port_B;
-  TIM_HandleTypeDef *Timer;
-  Pulses Puls;
+  unsigned short Safe_start_value;
 } Encoder;
 
 extern Encoder Encoder_AZ;

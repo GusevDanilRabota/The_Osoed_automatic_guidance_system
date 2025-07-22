@@ -1,4 +1,4 @@
 ../Core/Src/Operating_mode.c:21:6:Mode_Manual	6
-../Core/Src/Operating_mode.c:35:6:Mode_Semi_automatic	6
-../Core/Src/Operating_mode.c:49:6:Mode_Moving_away_from_borders	4
-../Core/Src/Operating_mode.c:58:6:Mode_Automatic	10
+../Core/Src/Operating_mode.c:36:6:Mode_Semi_automatic	6
+../Core/Src/Operating_mode.c:51:6:Mode_Moving_away_from_borders	4
+../Core/Src/Operating_mode.c:66:6:Mode_Automatic	13

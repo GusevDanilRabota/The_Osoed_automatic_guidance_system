@@ -1,5 +1,6 @@
 Core/Src/Encoder.o: ../Core/Src/Encoder.c ../Core/Inc/Encoder.h \
  ../Core/Inc/System_status.h ../Core/Inc/Macros.h \
+ ../Core/Inc/Typedef_pins.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -32,6 +33,7 @@ Core/Src/Encoder.o: ../Core/Src/Encoder.c ../Core/Inc/Encoder.h \
 ../Core/Inc/Encoder.h:
 ../Core/Inc/System_status.h:
 ../Core/Inc/Macros.h:
+../Core/Inc/Typedef_pins.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:

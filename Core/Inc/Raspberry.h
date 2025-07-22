@@ -14,7 +14,7 @@
 
 typedef struct
 {
-  UART_HandleTypeDef *Chanal;
+  UART_HandleTypeDef *UART_port;
 
   unsigned char transmitting;
 
@@ -27,8 +27,7 @@ typedef struct
 
 extern Raspberry RP_message;
 
-void Raspberry_DatPpars(void);
-//void Raspberry_DatPpars(unsigned char *Rx_data[21]);
+void Raspberry_DatPpars(unsigned char Rx_data[21]);
 void Raspberry_CreatMes(void);
 
 #endif /* INC_RASPBERRY_H_ */
