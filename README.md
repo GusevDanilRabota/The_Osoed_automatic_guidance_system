@@ -24,7 +24,67 @@
   
 Цель проекта: Повышение точности, скорости реакции и автономности турели в условиях высокой нагрузки и сложной радиоэлектронной обстановки.
 
+## Обзор системы
+Профессиональная система управления турелью ПВО с микроконтроллерным управлением и точным позиционированием. Разработана для конкурса инженерных решений в оборонной промышленности с использованием современных технологий:
+
+```c
+// Пример ключевой функции позиционирования
+void Encoder_GetAngular(Encoder *Encoder_xx) {
+  unsigned short Encoder_value = Encoder_xx->Timer->Instance->CNT / 4;
+  (Encoder_xx == &Encoder_AZ) ?
+    (Systema_AZ.Actual_angular = Systema_AZ.Config_angular.Minimum + 
+    (float)Encoder_value * (Systema_AZ.Config_angular.Maximum - Systema_AZ.Config_angular.Minimum) / 
+    Encoder_xx->Puls.Pulses_per_revolution) :
+    (Systema_EL.Actual_angular = Systema_EL.Config_angular.Minimum + 
+    (float)Encoder_value * (Systema_EL.Config_angular.Maximum - Systema_EL.Config_angular.Minimum) / 
+    Encoder_xx->Puls.Pulses_per_revolution);
+}
+```
+
+## Ключевые особенности
+### Точное позиционирование
+Разрешение ±0.1° благодаря энкодерам высокого разрешения (3000 имп./об для AZ)  
+Адаптивная коррекция положения в реальном времени  
+Буферные зоны безопасности по границам рабочей области  
+
+### Многорежимное управление
+| Режим | Описание | Функция |
+|-------|----------|---------|
+| Ручной | Прямое управление оператором | Mode_Manual() |
+| Полуавтомат | Автоматическое движение к цели | Mode_Semi_automatic() |
+| Автомат | Сложные траектории и алгоритмы | Mode_Automatic_AZ() |
+| Защитный | Автовозврат в безопасную зону | Mode_Moving_away_from_borders() |
+
+### Производительность
+Работа в реальном времени на STM32F4 (168 МГц)  
+Высокоскоростная связь с Raspberry Pi (921600 бод)  
+Оптимизированные алгоритмы управления двигателями  
+
+```c
+// Плавное управление двигателем
+void Motor_UpFrequency(Motor *Motor_xx) {
+  if (Motor_xx->State.Frequency < Motor_xx->Setting.Frequency.Maximum_pulse) {
+    Motor_SetFrequency(Motor_xx,
+      Motor_xx->State.Frequency + Motor_xx->Setting.Frequency.Step_up_the_pulse < Motor_xx->Setting.Frequency.Maximum_pulse ?
+      Motor_xx->State.Frequency + Motor_xx->Setting.Frequency.Step_up_the_pulse :
+      Motor_xx->Setting.Frequency.Maximum_pulse
+    );
+    HAL_TIM_PWM_Start(Motor_xx->Setting.Timer.Number, Motor_xx->Setting.Timer.Channel);
+  };
+}
+```
+
 ## Технические характеристики
+### Аппаратная платформа
+| Компонент | Спецификации |
+|-----------|--------------|
+| Микроконтроллер |    STM32F407VGT6 (Cortex-M4, 168 МГц) |
+| Двигатели | Шаговые, 1.8°/шаг с микрошагом |
+| Энкодеры | Инкрементальные (AZ: 3000 имп./об, EL: 611 имп./об) |
+| Интерфейсы | UART (RS-485), USB-C, JTAG |
+| Рабочие углы | AZ: ±270°, EL: -20°...+90° |
+
+### Тактико-технические характеристики
 | Параметр | Значение |
 |----------|----------|
 | Тип наведения | Радиолокационное + оптическое |
@@ -39,20 +99,48 @@
 | Питание | 380 В, 50 Гц / резервные АКБ |
 | Рабочая температура | -40°C...+60°C |
 
-## Структура проекта
+## Программная архитектура
 ```text
-The_Osoed_automatic_guidance_system/  
-├── Core/
-│   ├── Inc/  
-│   ├── Src/
-│   └── Startup/
-├── Drivers/
-├── Debug/
-├── docs/
-│   └── UML_Diagram.png 
-├── LICENSE
-└── README.md
+├── Core
+│   ├── Inc
+│   │   ├── Operating_mode.h       // Режимы работы
+│   │   ├── Macros.h               // Макросы CLAMP, MIN/MAX
+│   │   ├── System_status.h        // Системные параметры
+│   │   ├── Encoder.h              // Драйвер энкодера
+│   │   ├── Raspberry.h            // Коммуникация с RPi
+│   │   └── Stepper_Motor_Driver.h // Управление двигателями
+│   └── Src
+│       ├── main.c                 // Главный цикл
+│       ├── Operating_mode.c       // Реализация режимов
+│       ├── System_status.c        // Логика системы
+│       ├── Encoder.c              // Работа с энкодерами
+│       ├── Raspberry.c            // Парсинг сообщений
+│       └── Stepper_Motor_Driver.c // Драйвер двигателей
+├── Drivers
+└── docs                           // Техническая документация
 ```
+## Начало работы
+Требования  
+
+- STM32CubeIDE 1.8+
+- ST-Link Utility
+- Аппаратная платформа Osoed
+
+Сборка и развертывание  
+```bash
+# Клонировать репозиторий
+git clone https://github.com/ZIKCivilianProducts/The_Osoed_automatic_guidance_system.git
+
+# Импортировать проект в STM32CubeIDE
+File > Import > Existing Projects into Workspace
+
+# Собрать проект
+Project > Build All
+
+# Запрограммировать контроллер
+Run > Debug
+```
+
 ## Потенциал для инвестиций
 Почему это перспективно?  
 1. Госзаказ: Интерес Минобороны РФ к модульным системам ПВО.
