@@ -31,16 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include "Stepper_Motor_Driver.h"
-//#include "Encoder.h"
-//#include "Macros.h"
-//#include "System_status.h"
-//#include "Raspberry.h"
 #include "Operating_mode.h"
-
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <string.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -7,16 +7,8 @@
 
 #include "Operating_mode.h"
 
-Mode_Automatic_data Automatic_data_AZ = {
-  .Buffer_differens_angular = {0},
-  .Index_buffer = 0,
-  .Requirement_stop = 'N'
-};
-Mode_Automatic_data Automatic_data_EL = {
-  .Buffer_differens_angular = {0},
-  .Index_buffer = 0,
-  .Requirement_stop = 'N'
-};
+Mode_Automatic_data Automatic_data_AZ = {.Requirement_stop = 'N'};
+Mode_Automatic_data Automatic_data_EL = {.Requirement_stop = 'N'};
 
 void Mode_Manual(Motor *Motor_xx) {
   if (Motor_xx == &Motor_AZ ? RP_message.Azimuth : RP_message.Elevation) {
@@ -76,17 +68,8 @@ void Mode_Automatic(Motor *Motor_xx) {
 	} else {
 	  unsigned int Frequensy;
 
-//	  unsigned int Frequency_range =
-//	    Motor_xx == &Motor_AZ ?
-//	    (Motor_AZ.Parameters.Frequency.Maximum) - (Motor_AZ.Parameters.Frequency.Minimum) - 500:
-//		(Motor_EL.Parameters.Frequency.Maximum) - (Motor_EL.Parameters.Frequency.Minimum) - 500;
-//	  float Error_speed_range = Motor_xx == &Motor_AZ ? 600.0f : 200.0f;
-//	  Automatic_data_xx->Buffer_differens_angular[1] = Automatic_data_xx->Buffer_differens_angular[0];
-//	  Automatic_data_xx->Buffer_differens_angular[0] = Motor_xx == &Motor_AZ ? RP_message.Azimuth : RP_message.Elevation;
-//	  Automatic_data_xx->Buffer_speed[1] = Automatic_data_xx->Buffer_speed[0];
-//	  Automatic_data_xx->Buffer_speed[0] = (Automatic_data_xx->Buffer_differens_angular[0] - Automatic_data_xx->Buffer_differens_angular[1]) / 0.05;
-//	  float Increment_speed = abs(Automatic_data_xx->Buffer_speed[0] - Automatic_data_xx->Buffer_speed[1]);
-//	  unsigned int Increment_frequensy = (int)Increment_speed * Frequency_range / Error_speed_range;
+	  Automatic_data_xx->Buffer_differens_angular[1] = Automatic_data_xx->Buffer_differens_angular[0];
+	  Automatic_data_xx->Buffer_differens_angular[0] = Motor_xx == &Motor_AZ ? RP_message.Azimuth : RP_message.Elevation;
 
 	  unsigned int Increment_frequensy =
 	    100 * sqrt(Motor_xx == &Motor_AZ ? RP_message.Azimuth : RP_message.Elevation) +
